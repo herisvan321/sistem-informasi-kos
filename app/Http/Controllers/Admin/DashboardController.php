@@ -16,6 +16,19 @@ class DashboardController extends Controller
         $money = Transaction::where('status', 'Success')->sum('amount');
         $pending_reports = Report::where('status', 'Pending')->count();
 
+        // 2. Trend Calculations
+        $last_month_users = User::whereMonth('created_at', now()->subMonth()->month)
+            ->whereYear('created_at', now()->subMonth()->year)
+            ->count();
+        $user_change = $last_month_users > 0 
+            ? round((($total_users - $last_month_users) / $last_month_users) * 100) 
+            : 0;
+
+        $recent_listings_count = Listing::where('created_at', '>=', now()->subDays(7))->count();
+        
+        $revenue_target = 100000000; // 100 Million Target
+        $revenue_perc = $revenue_target > 0 ? round(($money / $revenue_target) * 100) : 0;
+
         // 2. Registration Trends (Last 6 Months) - Database Agnostic way
         $months = collect();
         for ($i = 5; $i >= 0; $i--) {
@@ -80,6 +93,9 @@ class DashboardController extends Controller
             'total_listings' => $total_listings,
             'monthly_revenue' => $money,
             'pending_reports' => $pending_reports,
+            'user_change' => $user_change,
+            'recent_listings_count' => $recent_listings_count,
+            'revenue_perc' => $revenue_perc,
             'registration_trends' => $registration_trends,
             'distribution' => $distribution,
             'activities' => $activities

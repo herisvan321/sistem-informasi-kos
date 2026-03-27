@@ -20,7 +20,9 @@
         <div class="stat-info">
             <div class="stat-value">{{ number_format($total_users) }}</div>
             <div class="stat-label">Total Pengguna</div>
-            <div class="stat-change up">+12% vs bln lalu</div>
+            <div class="stat-change {{ $user_change >= 0 ? 'up' : 'down' }}">
+                {{ $user_change >= 0 ? '+' : '' }}{{ $user_change }}% vs bln lalu
+            </div>
         </div>
     </div>
     <div class="stat-card">
@@ -30,7 +32,7 @@
         <div class="stat-info">
             <div class="stat-value">{{ number_format($total_listings) }}</div>
             <div class="stat-label">Total Listing</div>
-            <div class="stat-change up">+5 listing baru</div>
+            <div class="stat-change up">+{{ $recent_listings_count }} listing baru</div>
         </div>
     </div>
     <div class="stat-card">
@@ -40,7 +42,7 @@
         <div class="stat-info">
             <div class="stat-value">Rp {{ number_format($monthly_revenue / 1000000, 1) }}jt</div>
             <div class="stat-label">Estimasi Pendapatan</div>
-            <div class="stat-change up">Target 85% tercapai</div>
+            <div class="stat-change up">Target {{ $revenue_perc }}% tercapai</div>
         </div>
     </div>
     <div class="stat-card">
@@ -50,7 +52,9 @@
         <div class="stat-info">
             <div class="stat-value">{{ $pending_reports }}</div>
             <div class="stat-label">Laporan Pending</div>
-            <div class="stat-change down">Perlu tindakan segera</div>
+            <div class="stat-change {{ $pending_reports > 0 ? 'down' : 'up' }}">
+                {{ $pending_reports > 0 ? 'Perlu tindakan segera' : 'Sistem aman' }}
+            </div>
         </div>
     </div>
 </div>

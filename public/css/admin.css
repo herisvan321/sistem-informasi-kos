@@ -202,6 +202,20 @@ a { text-decoration: none; color: inherit; }
   width: 8px; height: 8px; border-radius: 50%;
   background: var(--danger); border: 2px solid var(--surface);
 }
+.notif-badge {
+  position: absolute; top: -5px; right: -5px;
+  background: var(--danger); color: #fff;
+  font-size: 10px; font-weight: 800;
+  padding: 2px 5px; border-radius: 20px;
+  min-width: 18px; text-align: center;
+  border: 2px solid var(--surface);
+  box-shadow: 0 2px 6px rgba(239,68,68,0.3);
+}
+.notif-dropdown { min-width: 320px; padding: 0 !important; overflow: hidden; }
+.notif-list .dropdown-item.unread {
+  background: rgba(78,115,223,0.05);
+  border-left: 3px solid var(--primary);
+}
 .admin-avatar {
   width: 38px; height: 38px; border-radius: 10px;
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));

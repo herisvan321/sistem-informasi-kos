@@ -21,5 +21,12 @@ class AppServiceProvider extends ServiceProvider
     {
         \App\Models\User::observe(\App\Observers\UserObserver::class);
         \App\Models\Listing::observe(\App\Observers\ListingObserver::class);
+        \App\Models\Setting::observe(\App\Observers\SettingObserver::class);
+        \App\Models\Banner::observe(\App\Observers\BannerObserver::class);
+
+        \Illuminate\Support\Facades\View::composer(
+            ['layouts.admin', 'admin.notifications.index'], 
+            \App\Http\View\Composers\NotificationComposer::class
+        );
     }
 }

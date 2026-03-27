@@ -37,8 +37,10 @@ Route::middleware(['auth', 'verified', 'role:super-admin'])->prefix('admin')->na
     Route::get('/settings', [SettingController::class, 'index'])->name('settings');
     Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
     Route::post('/settings/categories', [SettingController::class, 'storeCategory'])->name('settings.categories.store');
+    Route::patch('/settings/categories/{category}', [SettingController::class, 'updateCategory'])->name('settings.categories.update');
     Route::delete('/settings/categories/{category}', [SettingController::class, 'destroyCategory'])->name('settings.categories.destroy');
     Route::post('/settings/banners', [SettingController::class, 'storeBanner'])->name('settings.banners.store');
+    Route::patch('/settings/banners/{banner}', [SettingController::class, 'updateBanner'])->name('settings.banners.update');
     Route::delete('/settings/banners/{banner}', [SettingController::class, 'destroyBanner'])->name('settings.banners.destroy');
     
     Route::get('/roles-permissions', [RolePermissionController::class, 'index'])->name('roles-permissions');
@@ -47,6 +49,12 @@ Route::middleware(['auth', 'verified', 'role:super-admin'])->prefix('admin')->na
 
     Route::resource('roles', RoleController::class)->except(['create', 'show', 'edit']);
     Route::resource('permissions', PermissionController::class)->except(['create', 'show', 'edit']);
+
+    // Notifications
+    Route::get('/notifications', [App\Http\Controllers\Admin\NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/read-all', [App\Http\Controllers\Admin\NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
+    Route::patch('/notifications/{id}/read', [App\Http\Controllers\Admin\NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
+    Route::delete('/notifications/{id}', [App\Http\Controllers\Admin\NotificationController::class, 'destroy'])->name('notifications.destroy');
 });
 
 Route::middleware('auth')->group(function () {

@@ -9,5 +9,5 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
-    //
+    protected $fillable = ['name'];
 }

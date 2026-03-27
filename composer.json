@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "buglinjo/laravel-webp": "^3.2",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
         "spatie/laravel-permission": "^7.2"
@@ -25,7 +26,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helpers/site.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

@@ -9,5 +9,13 @@ use Illuminate\Database\Eloquent\Model;
 class Banner extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
-    //
+
+    protected $fillable = [
+        'title',
+        'description',
+        'image_path',
+        'start_date',
+        'end_date',
+        'is_active'
+    ];
 }

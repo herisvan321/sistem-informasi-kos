@@ -1,0 +1,257 @@
+@extends('layouts.admin')
+
+@section('content')
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Pengaturan Sistem</h1>
+        <p class="page-subtitle">Konfigurasi parameter platform dan manajemen data master</p>
+    </div>
+</div>
+
+<div class="two-col">
+    <!-- General Settings -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                Konfigurasi Utama
+            </div>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('admin.settings.update') }}" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label class="form-label">Identitas Aplikasi</label>
+                    <div class="input-wrap">
+                        <input type="text" name="app_name" class="form-input" value="{{ $settings['app_name'] ?? config('app.name') }}" placeholder="Nama platform anda">
+                        <div class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5L12 3l9 6.5V21H3V9.5z"/></svg></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Dukungan Pelanggan</label>
+                    <div class="input-wrap">
+                        <input type="email" name="contact_email" class="form-input" value="{{ $settings['contact_email'] ?? 'support@kosapp.id' }}">
+                        <div class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Biaya Listing Premium</label>
+                    <div class="input-wrap">
+                        <span style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-weight: 700; font-size: 13px; color: var(--primary);">Rp</span>
+                        <input type="number" name="premium_price" class="form-input" style="padding-left: 42px;" value="{{ $settings['premium_price'] ?? 50000 }}">
+                        <div class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+                    </div>
+                    <small style="display:block; margin-top:8px; color:var(--text-muted); font-size:12px;">Tarif ini akan dikenakan untuk setiap listing yang ingin naik ke tier Premium.</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status Operasional (Maintenance)</label>
+                    <div style="display: flex; gap: 10px; align-items: center; background: var(--bg); padding: 12px; border-radius: var(--radius-sm); border: 1.5px solid var(--border);">
+                        <select name="maintenance_mode" id="maintenance_mode" class="filter-select" style="flex: 1; border: none; background: transparent; padding: 0;">
+                            <option value="0" {{ ($settings['maintenance_mode'] ?? '0') == '0' ? 'selected' : '' }}>Platform Aktif (Live)</option>
+                            <option value="1" {{ ($settings['maintenance_mode'] ?? '0') == '1' ? 'selected' : '' }}>Mode Pemeliharaan (Under Maintenance)</option>
+                        </select>
+                        <span id="maintenance-badge" class="badge {{ ($settings['maintenance_mode'] ?? '0') == '1' ? 'badge-amber' : 'badge-green' }}">
+                            <span class="badge-dot"></span>
+                            {{ ($settings['maintenance_mode'] ?? '0') == '1' ? 'OFFLINE' : 'ONLINE' }}
+                        </span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-blue" style="width: 100%; margin-top: 15px; height: 50px; font-weight: 700; letter-spacing: 0.5px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Simpan Perubahan Konfigurasi
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Master Data Side -->
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+        <!-- Categories Management -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+                    Kategori Hunian
+                </div>
+                <button class="btn btn-sm btn-blue" onclick="openModal('modal-category')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                    Tambah
+                </button>
+            </div>
+            <div class="card-body" style="padding:0;">
+                <div class="table-wrap">
+                    <table class="table-hover">
+                        <tbody>
+                            @forelse($categories as $category)
+                            <tr>
+                                <td style="padding: 14px 22px;">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary);"></div>
+                                        <strong style="color:var(--text); font-size:13.5px;">{{ $category->name }}</strong>
+                                    </div>
+                                </td>
+                                <td style="text-align:right; padding: 14px 22px;">
+                                    <form action="{{ route('admin.settings.categories.destroy', $category->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Hapus kategori ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="act-btn danger" title="Hapus">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="2" class="empty-state">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+                                    <p>Belum ada kategori hunian terdaftar.</p>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Banner & Promotion -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    Media Promosi
+                </div>
+                <button class="btn btn-sm btn-blue" onclick="openModal('modal-banner')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                    Baru
+                </button>
+            </div>
+            <div class="card-body" style="padding:0;">
+                <div class="table-wrap">
+                    <table class="table-hover">
+                        <tbody>
+                            @forelse($banners as $banner)
+                            <tr>
+                                <td style="padding: 14px 22px;">
+                                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                                        <strong style="color:var(--text); font-size:13.5px;">{{ $banner->title }}</strong>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span class="badge badge-blue" style="font-size: 10px; padding: 2px 8px;">
+                                                <svg style="width:10px;height:10px;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                                Selesai: {{ \Carbon\Carbon::parse($banner->end_date)->format('d M Y') }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="text-align:right; padding: 14px 22px;">
+                                    <form action="{{ route('admin.settings.banners.destroy', $banner->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Hapus banner ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="act-btn danger" title="Hapus">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="2" class="empty-state">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                                    <p>Belum ada banner promosi aktif.</p>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Kelola Kategori -->
+<div class="modal-overlay" id="modal-category" onclick="closeModalOuter(event, 'modal-category')">
+    <div class="modal-box" style="max-width: 420px;">
+        <div class="modal-header">
+            <h2 class="modal-title">Registrasi Kategori Pesan</h2>
+            <button class="modal-close" onclick="closeModal('modal-category')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <form action="{{ route('admin.settings.categories.store') }}" method="POST">
+            @csrf
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Nama Kategori Hunian</label>
+                    <div class="input-wrap">
+                        <input type="text" name="name" class="form-input" placeholder="Misal: Kos Putri, Exclusive..." required autofocus>
+                        <div class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button type="button" class="btn btn-outline" onclick="closeModal('modal-category')">Batal</button>
+                <button type="submit" class="btn btn-blue">Simpan Kategori</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: Kelola Banner -->
+<div class="modal-overlay" id="modal-banner" onclick="closeModalOuter(event, 'modal-banner')">
+    <div class="modal-box" style="max-width: 500px;">
+        <div class="modal-header">
+            <h2 class="modal-title">Publikasi Banner Promosi</h2>
+            <button class="modal-close" onclick="closeModal('modal-banner')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <form action="{{ route('admin.settings.banners.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Judul Banner</label>
+                    <div class="input-wrap">
+                        <input type="text" name="title" class="form-input" placeholder="Contoh: Promo Ramadhan Berkah" required>
+                        <div class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Uraian Promo</label>
+                    <textarea name="description" class="form-input" rows="3" placeholder="Masukkan deskripsi promo yang menarik..." required></textarea>
+                </div>
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label class="form-label">Tgl Tayang</label>
+                        <input type="date" name="start_date" class="form-input" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Tgl Berakhir</label>
+                        <input type="date" name="end_date" class="form-input" required>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button type="button" class="btn btn-outline" onclick="closeModal('modal-banner')">Batal</button>
+                <button type="submit" class="btn btn-blue">Terbitkan Promo</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section('scripts')
+<script>
+    document.getElementById('maintenance_mode').addEventListener('change', function() {
+        const badge = document.getElementById('maintenance-badge');
+        if (this.value === '1') {
+            badge.className = 'badge badge-amber';
+            badge.innerHTML = '<span class="badge-dot"></span> OFFLINE';
+        } else {
+            badge.className = 'badge badge-green';
+            badge.innerHTML = '<span class="badge-dot"></span> ONLINE';
+        }
+    });
+</script>
+@endsection
+@endsection
+

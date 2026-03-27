@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>KosAdmin — Daftar</title>
+    <title>{{ get_setting('app_name', 'Kos') }}{{ get_setting('app_name_suffix', 'Admin') }} — Daftar</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
@@ -14,11 +14,11 @@
       <div class="login-logo-icon">
         <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V21H3V9.5z"/><rect x="9" y="13" width="6" height="8" fill="rgba(255,255,255,0.5)"/></svg>
       </div>
-      <div class="login-logo-text">Kos<span>Admin</span></div>
+      <div class="login-logo-text">{{ get_setting('app_name', 'Kos') }}<span>{{ get_setting('app_name_suffix', 'Admin') }}</span></div>
     </div>
 
     <div class="login-title">Daftar Akun Baru 📝</div>
-    <div class="login-sub">Bergabunglah dengan komunitas KosAdmin hari ini</div>
+    <div class="login-sub">Bergabunglah dengan komunitas {{ get_setting('app_name', 'Kos') }}{{ get_setting('app_name_suffix', 'Admin') }} hari ini</div>
 
     @if ($errors->any())
         <div class="login-error" style="display:block;">

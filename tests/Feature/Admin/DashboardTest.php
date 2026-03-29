@@ -26,7 +26,7 @@ class DashboardTest extends TestCase
                          ->get(route('admin.dashboard'));
 
         $response->assertStatus(200);
-        $response->assertSee('Dashboard Overview');
+        $response->assertSee('Pusat Kendali Ekosistem');
         $response->assertViewHas('total_users');
         $response->assertViewHas('total_listings');
         $response->assertViewHas('activities');

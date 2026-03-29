@@ -7,6 +7,24 @@ use App\Models\Listing;
 class ListingObserver
 {
     /**
+     * Handle the Listing "creating" event.
+     */
+    public function creating(Listing $listing): void
+    {
+        $listing->slug = \Illuminate\Support\Str::slug($listing->name) . '-' . substr(uniqid(), -5);
+    }
+
+    /**
+     * Handle the Listing "updating" event.
+     */
+    public function updating(Listing $listing): void
+    {
+        if ($listing->isDirty('name')) {
+            $listing->slug = \Illuminate\Support\Str::slug($listing->name) . '-' . substr(uniqid(), -5);
+        }
+    }
+
+    /**
      * Handle the Listing "created" event.
      */
     public function created(Listing $listing): void

@@ -22,8 +22,11 @@ Route::middleware(['auth', 'verified', 'role:super-admin'])->prefix('admin')->na
     Route::post('/users/{user}/verify', [UserController::class, 'verify'])->name('users.verify');
     
     Route::resource('listings', ListingController::class);
+    Route::get('/premium-requests', [ListingController::class, 'premiumRequests'])->name('listings.premium-requests');
     Route::post('/listings/{listing}/approve', [ListingController::class, 'approve'])->name('listings.approve');
     Route::post('/listings/{listing}/reject', [ListingController::class, 'reject'])->name('listings.reject');
+    Route::post('/listings/{listing}/approve-premium', [ListingController::class, 'approvePremium'])->name('listings.approve-premium');
+    Route::post('/listings/{listing}/reject-premium', [ListingController::class, 'rejectPremium'])->name('listings.reject-premium');
     Route::post('/listings/{listing}/toggle-premium', [ListingController::class, 'togglePremium'])->name('listings.toggle-premium');
 
     Route::get('/analytics', [DashboardController::class, 'analytics'])->name('analytics');
@@ -53,6 +56,31 @@ Route::middleware(['auth', 'verified', 'role:super-admin'])->prefix('admin')->na
     Route::post('/notifications/read-all', [App\Http\Controllers\Admin\NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
     Route::patch('/notifications/{id}/read', [App\Http\Controllers\Admin\NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
     Route::delete('/notifications/{id}', [App\Http\Controllers\Admin\NotificationController::class, 'destroy'])->name('notifications.destroy');
+});
+
+// Owner routes
+Route::middleware(['auth', 'verified', 'role:pemilik-kos'])->prefix('pemilik-kos')->name('pemilik-kos.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\PemilikKos\DashboardController::class, 'index'])->name('dashboard');
+    
+    Route::resource('listings', App\Http\Controllers\PemilikKos\ListingController::class);
+    
+    Route::get('/listings/{listing}/rooms', [App\Http\Controllers\PemilikKos\RoomController::class, 'index'])->name('listings.rooms.index');
+    Route::post('/listings/{listing}/rooms', [App\Http\Controllers\PemilikKos\RoomController::class, 'store'])->name('listings.rooms.store');
+    Route::patch('/rooms/{room}', [App\Http\Controllers\PemilikKos\RoomController::class, 'update'])->name('rooms.update');
+    Route::delete('/rooms/{room}', [App\Http\Controllers\PemilikKos\RoomController::class, 'destroy'])->name('rooms.destroy');
+    Route::post('/rooms/{room}/toggle-status', [App\Http\Controllers\PemilikKos\RoomController::class, 'toggleStatus'])->name('rooms.toggle-status');
+
+    Route::get('/inquiries', [App\Http\Controllers\PemilikKos\InquiryController::class, 'index'])->name('inquiries.index');
+    Route::get('/inquiries/{inquiry}', [App\Http\Controllers\PemilikKos\InquiryController::class, 'show'])->name('inquiries.show');
+    Route::post('/inquiries/{inquiry}/respond', [App\Http\Controllers\PemilikKos\InquiryController::class, 'respond'])->name('inquiries.respond');
+
+    Route::get('/transactions', [App\Http\Controllers\PemilikKos\TransactionController::class, 'index'])->name('transactions.index');
+    Route::get('/transactions/{transaction}', [App\Http\Controllers\PemilikKos\TransactionController::class, 'show'])->name('transactions.show');
+
+    Route::get('/tenants', [App\Http\Controllers\PemilikKos\TenantController::class, 'index'])->name('tenants.index');
+    Route::get('/listings/{listing}/premium-payment', [App\Http\Controllers\PemilikKos\ListingController::class, 'premiumPayment'])->name('listings.premium-payment');
+    Route::post('/listings/{listing}/request-premium', [App\Http\Controllers\PemilikKos\ListingController::class, 'requestPremium'])->name('listings.request-premium');
+    Route::post('/listings/{listing}/submit-premium', [App\Http\Controllers\PemilikKos\ListingController::class, 'submitPremium'])->name('listings.submit-premium');
 });
 
 Route::middleware('auth')->group(function () {

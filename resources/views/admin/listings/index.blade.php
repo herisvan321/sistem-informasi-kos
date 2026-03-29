@@ -91,6 +91,17 @@
                                     <svg style="width:12px;height:12px;margin-right:5px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                                     PREMIUM
                                 </span>
+                            @elseif($listing->premium_status === 'pending')
+                                <span class="badge badge-amber" style="background:rgba(245,158,11,0.05); border:1.5px dashed rgba(245,158,11,0.5); color:#D97706; padding: 4px 10px; font-size: 10px; font-weight: 700; animation: pulse 2s infinite;">
+                                    REQUESTED
+                                </span>
+                                @if($listing->premium_payment_proof)
+                                    <div style="margin-top: 4px;">
+                                        <a href="{{ asset('storage/' . $listing->premium_payment_proof) }}" target="_blank" style="font-size: 10px; color: var(--primary); font-weight: 700; text-decoration: underline;">
+                                            Lihat Bukti Bayar
+                                        </a>
+                                    </div>
+                                @endif
                             @else
                                 <span class="badge" style="opacity: 0.3; font-size: 9px; border: 1.5px solid var(--border); letter-spacing: 0.5px;">REGULAR</span>
                             @endif
@@ -112,6 +123,13 @@
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                                 </button>
                                 @endif
+                                
+                                <form action="{{ route('admin.listings.toggle-premium', $listing->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="act-btn {{ $listing->premium_status === 'pending' ? 'amber animation-pulse' : '' }}" title="{{ $listing->is_premium ? 'Downgrade Regular' : 'Upgrade Premium' }}">
+                                        <svg viewBox="0 0 24 24" fill="{{ $listing->is_premium ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    </button>
+                                </form>
                                 
                                 <button class="act-btn" title="Edit Cepat" 
                                         onclick="initEditListingModal('{{ $listing->id }}', '{{ $listing->name }}', '{{ addslashes($listing->address) }}', '{{ $listing->price }}', '{{ $listing->status }}')">

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $user) {
             $user->uuid('id')->primary();
-            $user->foreignId('user_id')->constrained()->onDelete('cascade');
-            $user->foreignId('listing_id')->nullable()->constrained()->onDelete('set null');
+            $user->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
+            $user->foreignUuid('listing_id')->nullable()->constrained('listings')->onDelete('set null');
             $user->decimal('amount', 15, 2);
             $user->string('status')->default('Success');
             $user->string('payment_method')->nullable();

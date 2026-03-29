@@ -23,8 +23,8 @@
             <div class="login-logo-text">{{ get_setting('app_name', 'Kos') }}<span>{{ get_setting('app_name_suffix', 'Admin') }}</span></div>
         </div>
 
-        <div class="login-title">Selamat Datang 👋</div>
-        <div class="login-sub">Masuk ke panel administrasi {{ get_setting('app_name', 'Kos') }}</div>
+        <div class="login-title">Autentikasi Akses 👋</div>
+        <div class="login-sub">Masuk ke Control Panel Pengelolaan Properti {{ get_setting('app_name', 'Kos') }}</div>
 
         @if ($errors->any())
             <div class="login-error" style="display:block; margin-bottom: 24px;">
@@ -58,11 +58,11 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn-primary" id="login-btn" style="width:100%; height:48px; font-size:16px;">Masuk Sekarang</button>
+            <button type="submit" class="btn-primary" id="login-btn" style="width:100%; height:48px; font-size:16px;">VALIDASI AKSES</button>
         </form>
 
         <div style="text-align:center; margin-top: 32px;">
-            <p style="font-size:14px; color:var(--text-muted);">Belum punya akun? <a href="{{ route('register') }}" style="color:var(--primary); font-weight:600;">Daftar Disini</a></p>
+            <p style="font-size:14px; color:var(--text-muted);">Belum terdaftar dalam jaringan? <a href="{{ route('register') }}" style="color:var(--primary); font-weight:600;">Registrasi Kemitraan</a></p>
         </div>
 
         <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:40px; padding-top:24px; border-top: 1px solid var(--border);">
@@ -74,17 +74,17 @@
   <!-- Right Side: Visual -->
   <div class="auth-right">
     <div class="auth-right-content">
-        <h2>Kelola Bisnis Kos Anda dengan Lebih Cerdas.</h2>
-        <p>Solusi manajemen properti modern untuk membantu Anda mengelola listing, memantau transaksi, dan melayani penyewa dalam satu platform terpadu.</p>
+        <h2>Ekosistem Manajemen Properti Terpadu.</h2>
+        <p>Optimasi operasional aset melalui infrastruktur digital yang presisi dan efisien dalam satu platform terpadu.</p>
         
         <div style="margin-top: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
             <div class="feat-item">
                 <div style="font-weight:800; font-size:24px; font-family:'Syne';">{{ number_format($total_listings ?? 1250) }}+</div>
-                <div style="font-size:13px; opacity:0.8;">Total Listing Aktif</div>
+                <div style="font-size:13px; opacity:0.8;">ASET TERVERIFIKASI</div>
             </div>
             <div class="feat-item">
                 <div style="font-weight:800; font-size:24px; font-family:'Syne';">99.9%</div>
-                <div style="font-size:13px; opacity:0.8;">Platform Uptime</div>
+                <div style="font-size:13px; opacity:0.8;">RELIABILITAS SISTEM</div>
             </div>
         </div>
     </div>

@@ -3,11 +3,11 @@
 @section('content')
 <div class="page-header">
     <div>
-        <h1 class="page-title">Dashboard Overview</h1>
-        <p class="page-subtitle">Selamat datang kembali, {{ auth()->user()->name }}</p>
+        <h1 class="page-title">Pusat Kendali Ekosistem</h1>
+        <p class="page-subtitle">Sesi Administrasi Strategis Aktif: {{ auth()->user()->name }}</p>
     </div>
     <div class="page-actions">
-        <a href="{{ route('admin.analytics') }}" class="btn btn-outline">Lihat Laporan Lengkap</a>
+        <a href="{{ route('admin.analytics') }}" class="btn btn-outline" style="border-radius: 100px; font-weight: 800; font-size: 11px;">ANALISIS KINERJA GLOBAL</a>
     </div>
 </div>
 
@@ -18,10 +18,10 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
         </div>
         <div class="stat-info">
-            <div class="stat-value">{{ number_format($total_users) }}</div>
-            <div class="stat-label">Total Pengguna</div>
-            <div class="stat-change {{ $user_change >= 0 ? 'up' : 'down' }}">
-                {{ $user_change >= 0 ? '+' : '' }}{{ $user_change }}% vs bln lalu
+            <div class="stat-value" style="font-family: 'Syne'; font-weight: 800;">{{ number_format($total_users) }}</div>
+            <div class="stat-label" style="font-weight: 700; font-size: 11px;">ENTITAS TERDAFTAR</div>
+            <div class="stat-change {{ $user_change >= 0 ? 'up' : 'down' }}" style="font-weight: 800; font-size: 10px;">
+                {{ $user_change >= 0 ? '+' : '' }}{{ $user_change }}% VS PREVIOUS PERIOD
             </div>
         </div>
     </div>
@@ -30,9 +30,9 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5L12 3l9 6.5V21H3V9.5z"/></svg>
         </div>
         <div class="stat-info">
-            <div class="stat-value">{{ number_format($total_listings) }}</div>
-            <div class="stat-label">Total Listing</div>
-            <div class="stat-change up">+{{ $recent_listings_count }} listing baru</div>
+            <div class="stat-value" style="font-family: 'Syne'; font-weight: 800;">{{ number_format($total_listings) }}</div>
+            <div class="stat-label" style="font-weight: 700; font-size: 11px;">INVENTORI PROPERTI</div>
+            <div class="stat-change up" style="font-weight: 800; font-size: 10px;">+{{ $recent_listings_count }} ASSET BARU</div>
         </div>
     </div>
     <div class="stat-card">
@@ -40,9 +40,9 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         </div>
         <div class="stat-info">
-            <div class="stat-value">Rp {{ number_format($monthly_revenue / 1000000, 1) }}jt</div>
-            <div class="stat-label">Estimasi Pendapatan</div>
-            <div class="stat-change up">Target {{ $revenue_perc }}% tercapai</div>
+            <div class="stat-value" style="font-family: 'Syne'; font-weight: 800;">Rp {{ number_format($monthly_revenue / 1000000, 1) }}jt</div>
+            <div class="stat-label" style="font-weight: 700; font-size: 11px;">AKUMULASI VALUASI</div>
+            <div class="stat-change up" style="font-weight: 800; font-size: 10px;">TARGET {{ $revenue_perc }}% TERCAPAI</div>
         </div>
     </div>
     <div class="stat-card">
@@ -50,10 +50,10 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <div class="stat-info">
-            <div class="stat-value">{{ $pending_reports }}</div>
-            <div class="stat-label">Laporan Pending</div>
-            <div class="stat-change {{ $pending_reports > 0 ? 'down' : 'up' }}">
-                {{ $pending_reports > 0 ? 'Perlu tindakan segera' : 'Sistem aman' }}
+            <div class="stat-value" style="font-family: 'Syne'; font-weight: 800;">{{ $pending_reports }}</div>
+            <div class="stat-label" style="font-weight: 700; font-size: 11px;">INTERVENSI SISTEM</div>
+            <div class="stat-change {{ $pending_reports > 0 ? 'down' : 'up' }}" style="font-weight: 800; font-size: 10px;">
+                {{ $pending_reports > 0 ? 'TINDAKAN SEGERA' : 'STABILITAS TERJAMIN' }}
             </div>
         </div>
     </div>
@@ -63,9 +63,9 @@
     <!-- Bar Chart -->
     <div class="card">
         <div class="card-header">
-            <div class="card-title">
+            <div class="card-title" style="font-weight: 800; font-family: 'Syne';">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="7" width="4" height="14"/><rect x="17" y="3" width="4" height="18"/></svg>
-                Registrasi Pengguna (6 Bulan)
+                Pertumbuhan Afiliasi (6 Bulan)
             </div>
         </div>
         <div class="card-body">
@@ -113,11 +113,11 @@
 <!-- Recent Activity Table -->
 <div class="card">
     <div class="card-header">
-        <div class="card-title">
+        <div class="card-title" style="font-weight: 800; font-family: 'Syne';">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-            Tabel Aktivitas Terbaru
+            Log Operasional Real-time
         </div>
-        <button class="btn btn-sm btn-outline" onclick="showToast('info','Navigasi ke log audit...')">Lihat Semua</button>
+        <button class="btn btn-sm btn-outline" style="border-radius: 100px; font-weight: 800; font-size: 10px;" onclick="showToast('info','Navigasi ke log audit...')">EKSPOR AUDIT</button>
     </div>
     <div class="card-body" style="padding:0;">
         <div class="table-wrap">

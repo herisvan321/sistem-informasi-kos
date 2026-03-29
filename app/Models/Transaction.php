@@ -14,9 +14,11 @@ class Transaction extends Model
     protected $fillable = [
         'user_id',
         'listing_id',
+        'room_id',
         'amount',
         'status', // Success, Pending, Failed
         'payment_method',
+        'payment_proof',
     ];
 
     public function user()
@@ -27,5 +29,10 @@ class Transaction extends Model
     public function listing()
     {
         return $this->belongsTo(Listing::class);
+    }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
     }
 }

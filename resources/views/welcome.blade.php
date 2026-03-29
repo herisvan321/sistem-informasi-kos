@@ -48,33 +48,33 @@
             </p>
 
             <!-- Search Bar -->
-            <div class="search-container reveal-up" style="transition-delay: 0.2s;">
+            <form action="{{ route('welcome') }}" method="GET" class="search-container reveal-up" style="transition-delay: 0.2s;">
                 <div class="search-field">
                     <label><i class="ph ph-map-pin"></i> Lokasi</label>
-                    <input type="text" placeholder="Mau tinggal di mana?">
+                    <input type="text" name="location" value="{{ request('location') }}" placeholder="Mau tinggal di mana?">
                 </div>
                 <div class="search-field">
                     <label><i class="ph ph-squares-four"></i> Kategori</label>
-                    <select>
+                    <select name="category_id">
                         <option value="">Semua Kategori</option>
                         @foreach($categories as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="search-field">
                     <label><i class="ph ph-currency-circle-dollar"></i> Budget</label>
-                    <select>
+                    <select name="budget">
                         <option value="">Rentang Harga</option>
                         <option value="1">Di bawah 2jt</option>
                         <option value="2">2jt - 5jt</option>
                         <option value="3">Di atas 5jt</option>
                     </select>
                 </div>
-                <button class="btn-search">
+                <button type="submit" class="btn-search">
                     <i class="ph-bold ph-magnifying-glass"></i> Cari Kos
                 </button>
-            </div>
+            </form>
         </div>
     </section>
 

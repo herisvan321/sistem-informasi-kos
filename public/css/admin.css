@@ -26,7 +26,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -88,7 +88,7 @@ a { text-decoration: none; color: inherit; }
   display: flex; align-items: center; justify-content: center;
 }
 .login-logo-icon svg { width: 26px; height: 26px; fill: #fff; }
-.login-logo-text { font-family: 'Syne', sans-serif; font-size: 22px;  color: var(--primary-dark); }
+.login-logo-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 22px;  font-weight: 800; color: var(--primary-dark); }
 .login-logo-text span { color: var(--primary); }
 .login-title { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
 .login-sub   { color: var(--text-muted); font-size: 14px; margin-bottom: 32px; }
@@ -150,7 +150,7 @@ a { text-decoration: none; color: inherit; }
   display: flex; align-items: center; justify-content: center;
 }
 .brand-icon svg { width: 20px; height: 20px; fill: #fff; }
-.brand-name { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 1800; color: var(--primary-dark); }
+.brand-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 18px; font-weight: 800; color: var(--primary-dark); }
 .brand-name span { color: var(--primary); }
 
 /* Nav menu items */
@@ -299,7 +299,7 @@ a { text-decoration: none; color: inherit; }
 
 /* Page header */
 .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 14px; }
-.page-title { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 1800; color: var(--text); }
+.page-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 800; color: var(--text); }
 .page-subtitle { color: var(--text-muted); font-size: 14px; margin-top: 3px; }
 
 /* Action buttons */
@@ -720,9 +720,9 @@ tbody tr:last-child td { border-bottom: none; }
 }
 
 .auth-right-content h2 {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 42px;
-    
+    font-weight: 800;
     line-height: 1.1;
     margin-bottom: 24px;
 }

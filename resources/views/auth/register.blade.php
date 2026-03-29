@@ -23,8 +23,8 @@
             <div class="login-logo-text">{{ get_setting('app_name', 'Kos') }}<span>{{ get_setting('app_name_suffix', 'Admin') }}</span></div>
         </div>
 
-        <div class="login-title">Daftar Akun Baru 📝</div>
-        <div class="login-sub">Bergabunglah dengan komunitas {{ get_setting('app_name', 'Kos') }}{{ get_setting('app_name_suffix', 'Admin') }} hari ini</div>
+        <div class="login-title">Inisialisasi Keanggotaan Strategis 📝</div>
+        <div class="login-sub">Akses eksklusif ke infrastruktur pengelolaan properti {{ get_setting('app_name', 'Kos') }}</div>
 
         @if ($errors->any())
             <div class="login-error" style="display:block; margin-bottom: 24px;">
@@ -56,6 +56,41 @@
             </div>
 
             <div class="form-group">
+                <label class="form-label">IDENTIFIKASI PERAN</label>
+                <div style="display: flex; gap: 16px; margin-top: 8px;">
+                    <label style="flex: 1; cursor: pointer;">
+                        <input type="radio" name="type_user" value="pencari-kos" checked style="display:none;" id="type_pencari">
+                        <div class="type-card" onclick="document.getElementById('type_pencari').click()">
+                            <span style="font-size:24px; display:block; margin-bottom:4px;">🔍</span>
+                            <span style="font-weight:600; font-size:14px;">MITRA PENGGUNA</span>
+                        </div>
+                    </label>
+                    <label style="flex: 1; cursor: pointer;">
+                        <input type="radio" name="type_user" value="pemilik-kos" style="display:none;" id="type_pemilik">
+                        <div class="type-card" onclick="document.getElementById('type_pemilik').click()">
+                            <span style="font-size:24px; display:block; margin-bottom:4px;">🏠</span>
+                            <span style="font-weight:600; font-size:14px;">MITRA PENGELOLA</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <style>
+                .type-card {
+                    border: 2px solid var(--border);
+                    border-radius: 12px;
+                    padding: 16px;
+                    text-align: center;
+                    transition: all 0.2s;
+                }
+                input[type="radio"]:checked + .type-card {
+                    border-color: var(--primary);
+                    background: rgba(var(--primary-rgb), 0.05);
+                    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.1);
+                }
+            </style>
+
+            <div class="form-group">
                 <label class="form-label" for="password">Password</label>
                 <div class="input-wrap">
                     <input class="form-input" id="password" type="password" name="password" placeholder="••••••••" required autocomplete="new-password"/>
@@ -75,7 +110,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn-primary" style="width:100%; height:48px; font-size:16px;">Daftar Sekarang</button>
+            <button type="submit" class="btn-primary" style="width:100%; height:48px; font-size:16px;">FINALISASI REGISTRASI</button>
         </form>
 
         <div style="text-align:center; margin-top: 32px;">
@@ -87,8 +122,8 @@
   <!-- Right Side: Visual -->
   <div class="auth-right">
     <div class="auth-right-content">
-        <h2>Bangun Masa Depan Properti Anda.</h2>
-        <p>Bergabunglah dengan ratusan pengelola properti lainnya yang telah mentransformasi bisnis kos mereka menjadi lebih terorganisir dan menguntungkan.</p>
+        <h2>Transformasi Aset Properti Secara Digital.</h2>
+        <p>Bergabunglah dengan ratusan pengelola properti profesional yang telah mentransformasi portofolio mereka melalui sistem terorganisir.</p>
         
         <div style="margin-top: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
             <div class="feat-item">

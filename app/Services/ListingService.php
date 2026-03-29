@@ -3,27 +3,120 @@
 namespace App\Services;
 
 use App\Models\Listing;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
-class ListingService extends BaseService
+class ListingService
 {
-    public function __construct(Listing $listing)
+    public function getAllForOwner($ownerId)
     {
-        parent::__construct($listing);
+        return Listing::where('owner_id', $ownerId)->latest()->get();
     }
 
-    public function approve(string $id): bool
+    public function create(array $data)
     {
-        return $this->update($id, ['status' => 'Approved']);
+        if (isset($data['main_photo'])) {
+            $data['main_photo'] = $this->uploadPhoto($data['main_photo']);
+        }
+
+        return Listing::create($data);
     }
 
-    public function reject(string $id, array $details = []): bool
+    public function update(Listing $listing, array $data)
     {
-        return $this->update($id, array_merge(['status' => 'Rejected'], $details));
+        if (isset($data['main_photo'])) {
+            if ($listing->main_photo) {
+                Storage::disk('public')->delete($listing->main_photo);
+            }
+            $data['main_photo'] = $this->uploadPhoto($data['main_photo']);
+        }
+
+        $listing->update($data);
+        return $listing;
     }
 
-    public function togglePremium(string $id): bool
+    public function delete(Listing $listing)
     {
-        $listing = $this->find($id);
-        return $listing->update(['is_premium' => !$listing->is_premium]);
+        if ($listing->main_photo) {
+            Storage::disk('public')->delete($listing->main_photo);
+        }
+        return $listing->delete();
+    }
+
+    public function approve(Listing $listing)
+    {
+        return $listing->update([
+            'status' => 'Approved',
+            'rejection_reason' => null,
+            'rejection_notes' => null,
+        ]);
+    }
+
+    public function reject(Listing $listing, array $data)
+    {
+        return $listing->update([
+            'status' => 'Rejected',
+            'rejection_reason' => $data['rejection_reason'] ?? null,
+            'rejection_notes' => $data['rejection_notes'] ?? null,
+        ]);
+    }
+
+    public function requestPremium(Listing $listing)
+    {
+        // Now handled by redirecting to payment page
+        return true;
+    }
+
+    public function submitPremiumProof(Listing $listing, $proofFile)
+    {
+        if ($listing->premium_payment_proof) {
+            Storage::disk('public')->delete($listing->premium_payment_proof);
+        }
+
+        $filename = 'proof_' . Str::uuid() . '.' . $proofFile->getClientOriginalExtension();
+        $path = $proofFile->storeAs('premium_proofs', $filename, 'public');
+
+        return $listing->update([
+            'premium_status' => 'pending',
+            'premium_payment_proof' => $path
+        ]);
+    }
+
+    public function togglePremium(Listing $listing)
+    {
+        $isPremium = !$listing->is_premium;
+        return $listing->update([
+            'is_premium' => $isPremium,
+            'premium_status' => $isPremium ? 'approved' : 'none'
+        ]);
+    }
+
+    public function approvePremiumListing(Listing $listing)
+    {
+        return $listing->update([
+            'is_premium' => true,
+            'premium_status' => 'approved',
+        ]);
+    }
+
+    public function rejectPremiumListing(Listing $listing, array $data = [])
+    {
+        // When rejected, we might want to delete the proof or just set status to none
+        if ($listing->premium_payment_proof) {
+            Storage::disk('public')->delete($listing->premium_payment_proof);
+        }
+
+        return $listing->update([
+            'is_premium' => false,
+            'premium_status' => 'none',
+            'premium_payment_proof' => null,
+            'rejection_notes' => $data['rejection_notes'] ?? null,
+        ]);
+    }
+
+    protected function uploadPhoto($photo)
+    {
+        $filename = Str::uuid() . '.' . $photo->getClientOriginalExtension();
+        return $photo->storeAs('listings', $filename, 'public');
     }
 }

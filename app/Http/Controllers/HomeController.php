@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $banners = Banner::where('is_active', true)
             ->where(function ($query) {
@@ -26,6 +26,16 @@ class HomeController extends Controller
 
         $featured_listings = Listing::with('user')
             ->where('status', 'Approved')
+            ->when($request->location, function($query, $location) {
+                $query->where(function($q) use ($location) {
+                    $q->where('city', 'like', "%{$location}%")
+                      ->orWhere('district', 'like', "%{$location}%")
+                      ->orWhere('address', 'like', "%{$location}%");
+                });
+            })
+            ->when($request->category_id, function($query, $category_id) {
+                $query->where('category_id', $category_id);
+            })
             ->orderBy('is_premium', 'desc')
             ->latest()
             ->take(6)
@@ -33,6 +43,16 @@ class HomeController extends Controller
 
         $latest_listings = Listing::with('user')
             ->where('status', 'Approved')
+            ->when($request->location, function($query, $location) {
+                $query->where(function($q) use ($location) {
+                    $q->where('city', 'like', "%{$location}%")
+                      ->orWhere('district', 'like', "%{$location}%")
+                      ->orWhere('address', 'like', "%{$location}%");
+                });
+            })
+            ->when($request->category_id, function($query, $category_id) {
+                $query->where('category_id', $category_id);
+            })
             ->latest()
             ->take(8)
             ->get();

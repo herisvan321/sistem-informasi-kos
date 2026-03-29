@@ -43,15 +43,7 @@
                         <div class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Biaya Listing Premium</label>
-                    <div class="input-wrap">
-                        <span style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-weight: 700; font-size: 13px; color: var(--primary);">Rp</span>
-                        <input type="number" name="premium_price" class="form-input" style="padding-left: 42px;" value="{{ $settings['premium_price'] ?? 50000 }}">
-                        <div class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
-                    </div>
-                    <small style="display:block; margin-top:8px; color:var(--text-muted); font-size:12px;">Tarif ini akan dikenakan untuk setiap listing yang ingin naik ke tier Premium.</small>
-                </div>
+                
                 <div class="form-group">
                     <label class="form-label">Status Operasional (Maintenance)</label>
                     <div style="display: flex; gap: 10px; align-items: center; background: var(--bg); padding: 12px; border-radius: var(--radius-sm); border: 1.5px solid var(--border);">
@@ -68,6 +60,64 @@
                 <button type="submit" class="btn btn-blue" style="width: 100%; margin-top: 15px; height: 50px; font-weight: 700; letter-spacing: 0.5px;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                     Simpan Perubahan Konfigurasi
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Premium Settings -->
+    <div class="card" style="margin-top: 20px;">
+        <div class="card-header">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary);"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+                Konfigurasi Pembayaran Premium
+            </div>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('admin.settings.update') }}" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label class="form-label">Biaya Listing Premium</label>
+                    <div class="input-wrap">
+                        <span style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-weight: 700; font-size: 13px; color: var(--primary);">Rp</span>
+                        <input type="number" name="premium_price" class="form-input" style="padding-left: 42px;" value="{{ $settings['premium_price'] ?? 150000 }}">
+                        <div class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label class="form-label">Nama Bank</label>
+                        <div class="input-wrap">
+                            <input type="text" name="premium_bank_name" class="form-input" value="{{ $settings['premium_bank_name'] ?? 'Bank BCA' }}">
+                            <div class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg></div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Atas Nama (A/N)</label>
+                        <div class="input-wrap">
+                            <input type="text" name="premium_bank_holder" class="form-input" value="{{ $settings['premium_bank_holder'] ?? 'PT KOS PREMIUM' }}">
+                            <div class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nomor Rekening</label>
+                    <div class="input-wrap">
+                        <input type="text" name="premium_bank_account" class="form-input" value="{{ $settings['premium_bank_account'] ?? '829 012 3456' }}">
+                        <div class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Ketentuan Premium (Baris baru untuk list)</label>
+                    <textarea name="premium_benefits" class="form-input" rows="4" style="height: auto;">{{ $settings['premium_benefits'] ?? "- Properti diprioritaskan di pencarian teratas\n- Badge Premium untuk kepercayaan\n- Analitik pengunjung lebih mendalam\n- Durasi aktif 30 hari" }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-blue" style="width: 100%; margin-top: 15px; height: 50px; font-weight: 700;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Simpan Konfigurasi Premium
                 </button>
             </form>
         </div>

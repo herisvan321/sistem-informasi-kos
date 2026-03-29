@@ -30,6 +30,12 @@
                         <label class="form-label">Nama Properti</label>
                         <input type="text" name="name" class="form-input" placeholder="Contoh: Kos Premium Cempaka" value="{{ old('name') }}" required>
                     </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Google Maps Link</label>
+                        <input type="url" name="map_link" class="form-input" placeholder="https://maps.google.com/..." value="{{ old('map_link') }}">
+                        <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Paste link dari Google Maps untuk akurasi lokasi yang lebih baik.</p>
+                    </div>
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div class="form-group">
@@ -116,11 +122,26 @@
                 </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label class="form-label" for="main_photo">Foto Properti</label>
+                        <label class="form-label" for="main_photo">Foto Utama (Cover)</label>
                         <div id="photo-preview" style="width:100%; height:180px; border-radius:12px; background:var(--bg); border:2px dashed var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden; margin-bottom:12px;">
                             <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.3;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                         </div>
-                        <input type="file" name="main_photo" id="main_photo" class="form-input" accept="image/*" onchange="previewImage(this)">
+                        <input type="file" name="main_photo" id="main_photo" class="form-input" accept="image/*" onchange="previewImage(this, 'photo-preview')">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Galeri Interior & Eksterior</div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">Pilih Beberapa Foto Galeri</label>
+                        <div id="gallery-preview" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px;">
+                            <!-- Previews will appear here -->
+                        </div>
+                        <input type="file" name="listing_images[]" class="form-input" accept="image/*" multiple onchange="previewMultipleImages(this, 'gallery-preview')">
                     </div>
                 </div>
             </div>
@@ -133,14 +154,35 @@
 </form>
 
 <script>
-    function previewImage(input) {
+    function previewImage(input, previewId) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                const preview = document.getElementById('photo-preview');
+                const preview = document.getElementById(previewId);
                 preview.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
             }
             reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function previewMultipleImages(input, previewId) {
+        const preview = document.getElementById(previewId);
+        preview.innerHTML = '';
+        if (input.files) {
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const div = document.createElement('div');
+                    div.style.width = '100%';
+                    div.style.height = '80px';
+                    div.style.borderRadius = '8px';
+                    div.style.overflow = 'hidden';
+                    div.style.border = '1px solid var(--border)';
+                    div.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+                    preview.appendChild(div);
+                }
+                reader.readAsDataURL(file);
+            });
         }
     }
 </script>

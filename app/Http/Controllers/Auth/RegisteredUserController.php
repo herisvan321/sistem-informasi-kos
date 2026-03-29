@@ -34,7 +34,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'type_user' => ['required', 'string', 'in:pencari-kos,pemilik-kos'],
+            'type_user' => ['required', 'string', 'in:pencari-kos,pemilik-kos,super-admin'],
         ]);
 
         $user = User::create([
@@ -60,6 +60,8 @@ class RegisteredUserController extends Controller
             return redirect()->route('admin.dashboard');
         } elseif ($user->hasRole('pemilik-kos')) {
             return redirect()->route('pemilik-kos.dashboard');
+        } elseif ($user->hasRole('pencari-kos')) {
+            return redirect()->route('pencari-kos.dashboard');
         }
 
         return redirect('/');

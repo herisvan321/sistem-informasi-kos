@@ -30,6 +30,7 @@
 
 <form action="{{ route('pemilik-kos.listings.update', $listing->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
+    @method('PATCH')
     <div class="two-col">
         <div class="main-form">
             <div class="card">
@@ -43,6 +44,12 @@
                     <div class="form-group">
                         <label class="form-label">Nama Properti</label>
                         <input type="text" name="name" class="form-input" placeholder="Contoh: Kos Premium Cempaka" value="{{ old('name', $listing->name) }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Google Maps Link</label>
+                        <input type="url" name="map_link" class="form-input" placeholder="https://maps.google.com/..." value="{{ old('map_link', $listing->map_link) }}">
+                        <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Paste link dari Google Maps untuk akurasi lokasi yang lebih baik.</p>
                     </div>
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
@@ -141,7 +148,62 @@
                                 <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.3;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                             @endif
                         </div>
-                        <input type="file" name="main_photo" id="main_photo" class="form-input" accept="image/*" onchange="previewImage(this)">
+                        <input type="file" name="main_photo" id="main_photo" class="form-input" accept="image/*" onchange="previewImage(this, 'photo-preview')">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Galeri Interior & Eksterior</div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">Galeri Saat Ini</label>
+                        <style>
+                            .gallery-item-card {
+                                position: relative; aspect-ratio: 1; border-radius: 16px; 
+                                overflow: hidden; border: 1.5px solid var(--border); 
+                                transition: all 0.3s ease;
+                                cursor: grab;
+                            }
+                            .gallery-item-card:active { cursor: grabbing; }
+                            .gallery-item-card:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+                            .gallery-item-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+                            .gallery-item-card:hover img { transform: scale(1.1); }
+                            .delete-btn-overlay {
+                                position: absolute; top: 8px; right: 8px; z-index: 10;
+                            }
+                            .btn-delete-gallery {
+                                width: 30px; height: 30px; border-radius: 8px; 
+                                background: #ef4444; /* Solid Red */
+                                color: #fff; border: 2px solid #fff; 
+                                cursor: pointer; display: flex; align-items: center; justify-content: center;
+                                transition: all 0.2s ease; 
+                                box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+                                z-index: 50; /* High z-index */
+                            }
+                            .btn-delete-gallery:hover { background: #dc2626; transform: scale(1.1); }
+                        </style>
+
+                        <div id="sortable-gallery" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; margin-bottom: 24px;">
+                            @foreach($listing->images as $image)
+                                <div class="gallery-item-card" data-id="{{ $image->id }}">
+                                    <img src="{{ asset('storage/'.$image->photo_path) }}">
+                                    <div class="delete-btn-overlay">
+                                        <button type="button" class="btn-delete-gallery" onclick="deleteGalleryImage('{{ route('pemilik-kos.listings.delete-image', $image->id) }}')">
+                                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <label class="form-label">Tambah Foto Galeri Baru</label>
+                        <div id="gallery-preview" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px;">
+                            <!-- Previews will appear here -->
+                        </div>
+                        <input type="file" name="listing_images[]" class="form-input" accept="image/*" multiple onchange="previewMultipleImages(this, 'gallery-preview')">
                     </div>
                 </div>
             </div>
@@ -191,15 +253,89 @@
     </div>
 </form>
 
+<form id="delete-gallery-form" method="POST" style="display:none;">
+    @csrf
+    @method('DELETE')
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
-    function previewImage(input) {
+    // Initialize Sortable
+    const gallery = document.getElementById('sortable-gallery');
+    if (gallery) {
+        new Sortable(gallery, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            onEnd: function() {
+                const order = Array.from(gallery.querySelectorAll('.gallery-item-card')).map(el => el.dataset.id);
+                
+                fetch("{{ route('pemilik-kos.listings.reorder-images') }}", {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ order: order })
+                })
+                .then(async response => {
+                    const data = await response.json();
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Server error');
+                    }
+                    return data;
+                })
+                .then(data => {
+                    if (data.success) {
+                        showToast('success', 'Urutan galeri berhasil diperbarui!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Reorder Error:', error);
+                    showToast('error', 'Gagal memperbarui urutan: ' + error.message);
+                });
+            }
+        });
+    }
+
+    function deleteGalleryImage(url) {
+        if (confirm('Apakah Anda yakin ingin menghapus foto galeri ini?')) {
+            const form = document.getElementById('delete-gallery-form');
+            form.action = url;
+            form.submit();
+        }
+    }
+
+    function previewImage(input, previewId) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                const preview = document.getElementById('photo-preview');
+                const preview = document.getElementById(previewId);
                 preview.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
             }
             reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function previewMultipleImages(input, previewId) {
+        const preview = document.getElementById(previewId);
+        preview.innerHTML = '';
+        if (input.files) {
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const div = document.createElement('div');
+                    div.style.width = '100%';
+                    div.style.aspectRatio = '1';
+                    div.style.borderRadius = '16px';
+                    div.style.overflow = 'hidden';
+                    div.style.border = '1.5px solid var(--primary)';
+                    div.style.boxShadow = 'var(--shadow-sm)';
+                    div.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+                    preview.appendChild(div);
+                }
+                reader.readAsDataURL(file);
+            });
         }
     }
 </script>

@@ -8,6 +8,13 @@ use Illuminate\Support\Str;
 
 class ListingService
 {
+    protected $imageService;
+
+    public function __construct(ImageService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
+
     public function getAllForOwner($ownerId)
     {
         return Listing::where('owner_id', $ownerId)->latest()->get();
@@ -19,7 +26,17 @@ class ListingService
             $data['main_photo'] = $this->uploadPhoto($data['main_photo']);
         }
 
-        return Listing::create($data);
+        $listing = Listing::create($data);
+
+        if (isset($data['listing_images'])) {
+            foreach ($data['listing_images'] as $image) {
+                $listing->images()->create([
+                    'photo_path' => $this->uploadPhoto($image)
+                ]);
+            }
+        }
+
+        return $listing;
     }
 
     public function update(Listing $listing, array $data)
@@ -32,6 +49,15 @@ class ListingService
         }
 
         $listing->update($data);
+
+        if (isset($data['listing_images'])) {
+            foreach ($data['listing_images'] as $image) {
+                $listing->images()->create([
+                    'photo_path' => $this->uploadPhoto($image)
+                ]);
+            }
+        }
+
         return $listing;
     }
 
@@ -73,8 +99,7 @@ class ListingService
             Storage::disk('public')->delete($listing->premium_payment_proof);
         }
 
-        $filename = 'proof_' . Str::uuid() . '.' . $proofFile->getClientOriginalExtension();
-        $path = $proofFile->storeAs('premium_proofs', $filename, 'public');
+        $path = $this->imageService->convertToWebp($proofFile, 'premium_proofs');
 
         return $listing->update([
             'premium_status' => 'pending',
@@ -116,7 +141,6 @@ class ListingService
 
     protected function uploadPhoto($photo)
     {
-        $filename = Str::uuid() . '.' . $photo->getClientOriginalExtension();
-        return $photo->storeAs('listings', $filename, 'public');
+        return $this->imageService->convertToWebp($photo, 'listings');
     }
 }

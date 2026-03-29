@@ -98,11 +98,36 @@
                     <span style="font-size: 18px; font-weight: 800; font-family: 'Syne'; color: var(--text);">Total Bayar</span>
                     <span style="font-size: 18px; font-weight: 800; font-family: 'Syne'; color: var(--primary);">Rp {{ number_format($transaction->amount, 0, ',', '.') }}</span>
                 </div>
-                
-                <div style="margin-top: 24px; padding: 16px; background: rgba(var(--success-rgb), 0.05); border: 1px solid rgba(var(--success-rgb), 0.2); border-radius: 12px; text-align: center;">
-                    <div style="font-size: 12px; font-weight: 800; color: var(--success); text-transform: uppercase; letter-spacing: 1px;">Status Pembayaran</div>
-                    <div style="font-size: 16px; font-weight: 800; color: var(--success); margin-top: 4px;">Lunas / Berhasil</div>
+                @if($transaction->status === 'Pending' && $transaction->payment_proof)
+                <div style="margin-top: 32px; padding: 24px; background: rgba(var(--amber-rgb), 0.05); border: 1px solid rgba(var(--amber-rgb), 0.2); border-radius: 16px;">
+                    <div style="font-size: 11px; font-weight: 800; color: var(--amber); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; text-align: center;">Verifikasi Pembayaran</div>
+                    <div style="margin-bottom: 24px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border);">
+                        <img src="{{ asset('storage/' . $transaction->payment_proof) }}" alt="Bukti Bayar" style="width: 100%; height: auto; display: block;">
+                        <div style="padding: 10px; background: #fff; text-align: center;">
+                            <a href="{{ asset('storage/' . $transaction->payment_proof) }}" target="_blank" style="font-size: 11px; font-weight: 700; color: var(--primary); text-decoration: none;">PERBESAR GAMBAR</a>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <form action="{{ route('pemilik-kos.transactions.approve', $transaction->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-primary" style="width: 100%; border-radius: 100px; font-size: 11px; padding: 12px; font-weight: 800;">TERIMA</button>
+                        </form>
+                        <form action="{{ route('pemilik-kos.transactions.reject', $transaction->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-outline" style="width: 100%; border-radius: 100px; font-size: 11px; padding: 12px; font-weight: 800; color: #ef4444; border-color: #fecaca;">TOLAK</button>
+                        </form>
+                    </div>
                 </div>
+                @elseif(in_array($transaction->status, ['Paid', 'Active', 'Success']))
+                <div style="margin-top: 24px; padding: 16px; background: rgba(var(--success-rgb), 0.05); border: 1px solid rgba(var(--success-rgb), 0.2); border-radius: 12px; text-align: center;">
+                    <div style="font-size: 12px; font-weight: 800; color: var(--success); text-transform: uppercase; letter-spacing: 1px;">Status Konfirmasi</div>
+                    <div style="font-size: 16px; font-weight: 800; color: var(--success); margin-top: 4px;">Diverifikasi / Lunas</div>
+                </div>
+                @else
+                <div style="margin-top: 24px; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; text-align: center;">
+                    <div style="font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Status: {{ strtoupper($transaction->status) }}</div>
+                </div>
+                @endif
             </div>
         </div>
 

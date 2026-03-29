@@ -27,4 +27,26 @@ class TransactionController extends Controller
 
         return view('pemilik_kos.transactions.show', compact('transaction'));
     }
+
+    public function approve(Transaction $transaction)
+    {
+        if ($transaction->listing->owner_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $transaction->update(['status' => 'Paid']);
+
+        return redirect()->back()->with('success', 'Pembayaran telah disetujui. Status penyewaan kini aktif.');
+    }
+
+    public function reject(Transaction $transaction)
+    {
+        if ($transaction->listing->owner_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $transaction->update(['status' => 'Failed']);
+
+        return redirect()->back()->with('error', 'Pembayaran telah ditolak.');
+    }
 }

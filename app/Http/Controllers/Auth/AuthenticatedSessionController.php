@@ -37,6 +37,8 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('admin.dashboard');
         } elseif ($user->hasRole('pemilik-kos')) {
             return redirect()->route('pemilik-kos.dashboard');
+        } elseif ($user->hasRole('pencari-kos')) {
+            return redirect()->route('pencari-kos.dashboard');
         }
 
         return redirect('/');

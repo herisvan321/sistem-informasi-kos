@@ -8,9 +8,12 @@ use Buglinjo\LaravelWebp\Facades\Webp;
 
 class BannerService extends BaseService
 {
-    public function __construct(Banner $banner)
+    protected $imageService;
+
+    public function __construct(Banner $banner, ImageService $imageService)
     {
         parent::__construct($banner);
+        $this->imageService = $imageService;
     }
 
     public function storeBanner(array $data, $imageFile): Banner
@@ -33,19 +36,12 @@ class BannerService extends BaseService
 
     protected function uploadAndConvert($imageFile): string
     {
-        $filename = time() . '.webp';
-        $directory = 'banners';
-        $path = storage_path('app/public/' . $directory);
+        $path = $this->imageService->convertToWebp($imageFile, 'banners');
 
-        if (!file_exists($path)) {
-            mkdir($path, 0755, true);
+        if (!$path) {
+            throw new \Exception('Failed to convert banner image to WebP');
         }
 
-        $webp = Webp::make($imageFile);
-        if ($webp->save($path . '/' . $filename)) {
-            return $directory . '/' . $filename;
-        }
-
-        throw new \Exception('Failed to convert image to WebP');
+        return $path;
     }
 }

@@ -89,6 +89,48 @@ class ListingController extends Controller
         return redirect()->route('pemilik-kos.listings.index')->with('success', 'Bukti pembayaran telah dikirim. Admin akan segera memverifikasi permintaan Anda.');
     }
 
+    public function deleteGalleryImage(\App\Models\ListingImage $image)
+    {
+        $listing = $image->listing;
+        $this->authorizeOwner($listing);
+
+        \Illuminate\Support\Facades\Storage::disk('public')->delete($image->photo_path);
+        $image->delete();
+
+        return back()->with('success', 'Foto galeri berhasil dihapus.');
+    }
+
+    public function reorderImages(Request $request)
+    {
+        try {
+            $request->validate([
+                'order' => 'required|array',
+                'order.*' => 'required|string|exists:listing_images,id',
+            ]);
+
+            // Optional security: ensure images belong to the user
+            $imageIds = $request->order;
+            $count = \App\Models\ListingImage::whereIn('id', $imageIds)
+                ->whereHas('listing', function($q) {
+                    $q->where('owner_id', Auth::id());
+                })->count();
+
+            if ($count !== count($imageIds)) {
+                return response()->json(['success' => false, 'message' => 'Unauthorized or invalid image IDs.'], 403);
+            }
+
+            foreach ($request->order as $index => $id) {
+                \App\Models\ListingImage::where('id', $id)->update(['sort_order' => $index]);
+            }
+
+            return response()->json(['success' => true]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage(), 'errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
     protected function authorizeOwner(Listing $listing)
     {
         if ($listing->owner_id !== Auth::id()) {

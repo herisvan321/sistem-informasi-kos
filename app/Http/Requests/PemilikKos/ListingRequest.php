@@ -15,13 +15,16 @@ class ListingRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
+            'type' => 'required|in:Putra,Putri,Campur',
             'address' => 'required|string',
+            'map_link' => 'nullable|url',
             'description' => 'required|string',
             'city' => 'required|string|max:100',
             'district' => 'required|string|max:100',
             'price' => 'required|numeric|min:0',
             'facilities' => 'nullable|array',
             'main_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'listing_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 }
